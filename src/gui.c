@@ -36,13 +36,13 @@ struct Weekdays {
     char *longname;
     char *shortname;
 } weekdays[] = {
-    {"Sunday", "Su"},
-    {"Monday", "Mo"},
-    {"Tuesday", "Tu"},
-    {"Wednesday", "We"},
-    {"Thursday", "Th"},
-    {"Friday", "Fr"},
-    {"Saturday", "Sa"}
+    {"Sunday", "日"},
+    {"Monday", "一"},
+    {"Tuesday", "二"},
+    {"Wednesday", "三"},
+    {"Thursday", "四"},
+    {"Friday", "五"},
+    {"Saturday", "六"}
 };
 
 
@@ -50,18 +50,18 @@ struct Month {
     char *longName;
     unsigned int num_days;
 } months[] = {
-    {"January", 31},
-    {"February", 28},
-    {"March", 31},
-    {"April", 30},
-    {"May", 31},
-    {"June", 30},
-    {"July", 31},
-    {"August", 31},
-    {"September", 30},
-    {"October", 31},
-    {"November", 30},
-    {"December", 31}
+    {"1 月", 31},
+    {"2 月", 28},
+    {"3 月", 31},
+    {"4 月", 30},
+    {"5 月", 31},
+    {"6 月", 30},
+    {"7 月", 31},
+    {"8 月", 31},
+    {"9 月", 30},
+    {"10 月", 31},
+    {"11 月", 30},
+    {"12 月", 31}
 };
 
 
@@ -185,7 +185,7 @@ static void update_calendar(CalendarPtr this)
         return;
 
     label = gtk_grid_get_child_at(GTK_GRID(grid), 1,0);
-    sprintf(temp, "%s %d", months[this->month-1].longName, this->year);
+    sprintf(temp, "%d 年 %s", this->year, months[this->month-1].longName);
     gtk_label_set_text(GTK_LABEL(label), temp);
 
     if (this->month == 2) {
