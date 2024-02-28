@@ -13,6 +13,7 @@
 #include "config.h"
 #include "common.h"
 
+char* date_label(int year, int month, int day);
 
 typedef enum{
     SUNDAY = 0,
@@ -178,7 +179,7 @@ static void update_calendar(CalendarPtr this)
 {
     GtkWidget *grid;
     GtkWidget *label;
-    char temp[20];
+    char temp[40];
 
     grid = gtk_bin_get_child(GTK_BIN(this->window));
     if (grid == NULL)
@@ -209,18 +210,39 @@ static void update_calendar(CalendarPtr this)
         for (int col = 0; col < 7; col++) {
             label = gtk_grid_get_child_at(GTK_GRID(grid), col, line);
 
+            int year = this->year;
+            int month = this->month;
+
             if (day > 0 && day <= (int)months[this->month-1].num_days) {
                 gtk_widget_set_name(GTK_WIDGET(label), "date");
-                sprintf(temp, "%d", day);
+                sprintf(temp, "%d\n%s", day, date_label(year, month, day));
             } else {
                 gtk_widget_set_name(GTK_WIDGET(label), "fringeDate");
                 if (day < 1)
-                    sprintf(temp, "%d", months[prev_month-1].num_days+day);
+                {
+                    month--;
+                    if(month == 0)
+                    {
+                        year--;
+                        month = 12;
+                    }
+                    sprintf(temp, "%d\n%s", months[prev_month-1].num_days+day, date_label(year, month, months[prev_month-1].num_days+day));
+                }
                 else
-                    sprintf(temp, "%d", day - months[this->month-1].num_days);
+                {
+                    month++;
+                    if(month == 13) {
+                        year++;
+                        month = 1;
+                    }
+                    sprintf(temp, "%d\n%s", day - months[this->month-1].num_days, date_label(year, month, day - months[this->month-1].num_days));
+                }
             }
 
             gtk_label_set_text(GTK_LABEL(label), temp);
+            gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+            gtk_widget_set_halign(label, GTK_ALIGN_CENTER);
+
             if (day == (int)this->highlight_date.day &&
                     this->month == this->highlight_date.month &&
                     this->year == this->highlight_date.year) {
