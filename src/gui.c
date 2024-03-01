@@ -180,6 +180,7 @@ static void update_calendar(CalendarPtr this)
     GtkWidget *grid;
     GtkWidget *label;
     char temp[40];
+    char chinese_label[20];
 
     grid = gtk_bin_get_child(GTK_BIN(this->window));
     if (grid == NULL)
@@ -215,7 +216,8 @@ static void update_calendar(CalendarPtr this)
 
             if (day > 0 && day <= (int)months[this->month-1].num_days) {
                 gtk_widget_set_name(GTK_WIDGET(label), "date");
-                sprintf(temp, "%d\n%s", day, date_label(year, month, day));
+                sprintf(temp, "%d", day);
+                strcpy(chinese_label, date_label(year, month, day));
             } else {
                 gtk_widget_set_name(GTK_WIDGET(label), "fringeDate");
                 if (day < 1)
@@ -226,7 +228,8 @@ static void update_calendar(CalendarPtr this)
                         year--;
                         month = 12;
                     }
-                    sprintf(temp, "%d\n%s", months[prev_month-1].num_days+day, date_label(year, month, months[prev_month-1].num_days+day));
+                    sprintf(temp, "%d", months[prev_month-1].num_days+day);
+                    strcpy(chinese_label, date_label(year, month, months[prev_month-1].num_days+day));
                 }
                 else
                 {
@@ -235,11 +238,15 @@ static void update_calendar(CalendarPtr this)
                         year++;
                         month = 1;
                     }
-                    sprintf(temp, "%d\n%s", day - months[this->month-1].num_days, date_label(year, month, day - months[this->month-1].num_days));
+                    sprintf(temp, "%d", day - months[this->month-1].num_days);
+                    strcpy(chinese_label, date_label(year, month, day - months[this->month-1].num_days));
                 }
             }
 
-            gtk_label_set_text(GTK_LABEL(label), temp);
+            char markup_text[100];
+            sprintf(markup_text, "%s\n<span font='10'>%s</span>", temp, chinese_label);
+            gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+            gtk_label_set_markup(GTK_LABEL(label), markup_text);
             gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
             gtk_widget_set_halign(label, GTK_ALIGN_CENTER);
 
